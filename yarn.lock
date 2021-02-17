@@ -3017,6 +3017,11 @@ buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
+builder-pattern@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/builder-pattern/-/builder-pattern-1.2.4.tgz#69d1ad6d1a06f592c03e7ea0aa9c3178edabe995"
+  integrity sha512-WZekF4WyzDql5otqYRPvN4qRWvBcdTN+IwHcbHqTgG6E95MZiMirnWrD2Eix3EcqdnS2MKcc/YXYPvMjC6N/0g==
+
 builtin-modules@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-3.2.0.tgz#45d5db99e7ee5e6bc4f362e008bf917ab5049887"
@@ -10533,6 +10538,11 @@ svgo@^1.0.0, svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+sweetalert2@^10.15.2:
+  version "10.15.2"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-10.15.2.tgz#7d99a168c2a84460a4f457f5817ab02192a1d259"
+  integrity sha512-PQyFnkfURWyDRXeSmk0bojvdxnhqGj0xbjtecAPtzDMAHSuJeVd8jr0/AdR/nkyzGV9HNEjRXk8b5hyWinhf9w==
 
 symbol-tree@^3.2.4:
   version "3.2.4"

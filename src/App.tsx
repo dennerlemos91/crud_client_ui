@@ -5,11 +5,13 @@ import Routes from './routes'
 import { AuthProvider } from './hooks/AuthContext';
 
 import history from './routes/history';
+import Header from './components/Header';
 
 function App() {
   return (
     <AuthProvider>
       <Router history={history}>
+        <Header />
         <Routes />
       </Router>
     </AuthProvider>
