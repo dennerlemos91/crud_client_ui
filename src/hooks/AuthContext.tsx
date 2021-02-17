@@ -10,17 +10,18 @@ interface AuthContextState {
   authenticated: boolean;
   handleLogin(credentials: SignInCredentials): Promise<void>
   handleLogout(): void,
-  loading: boolean
+  loading: boolean,
+  possuiPermissao(permissao: string): boolean
 }
 const AuthContext = createContext<AuthContextState>({} as AuthContextState);
 
 const AuthProvider = ({ children }: any) => {
   const {
-    authenticated, loading, handleLogin, handleLogout,
+    authenticated, loading, handleLogin, handleLogout, possuiPermissao
   } = useAuth();
 
   return (
-    <AuthContext.Provider value={{ loading, authenticated, handleLogin, handleLogout }}>
+    <AuthContext.Provider value={{ loading, authenticated, handleLogin, handleLogout, possuiPermissao }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { useEffect } from 'react';
 
@@ -10,9 +10,12 @@ import { Cliente } from '../../../models/cliente.interface';
 import { Telefone } from '../../../models/telefone.interface';
 import alertaService from '../../../services/sweetalerta.service';
 import { SweetAlertResult } from 'sweetalert2';
+import { AuthContext } from '../../../hooks/AuthContext';
 
 const ClienteList: React.FC = () => {
     const [clientes, setClientes] = useState<Cliente[]>([]);
+
+    const { possuiPermissao } = useContext(AuthContext)
 
     useEffect(() => {
         const findAll = async () => {
@@ -43,7 +46,6 @@ const ClienteList: React.FC = () => {
             alertaService.alertaErro('Erro ao tentar deletar cliente!')
         }
 
-
     }
 
     return (
@@ -55,7 +57,7 @@ const ClienteList: React.FC = () => {
                     <th>Telefones</th>
                     <th>Emails</th>
                     <th>Endereço</th>
-                    <th></th>
+                    {possuiPermissao('ROLE_ADMIN') && (<th></th>)}
                 </tr>
             </thead>
             <tbody>
@@ -87,10 +89,11 @@ const ClienteList: React.FC = () => {
                                 </ul>
                             }</td>
                             <td>{cliente?.endereco?.logradouro}</td>
-                            <td>
+                            {possuiPermissao('ROLE_ADMIN') && (<td>
                                 <Button variant="secondary" className="mr-3" onClick={() => history.push(`/edit/${cliente.id}`)}>Editar</Button>
                                 <Button variant="danger" onClick={() => confirmDelete(cliente.id)}>Excluir</Button>
-                            </td>
+                            </td>)}
+
                         </tr>
                     )) : (
                             <tr>

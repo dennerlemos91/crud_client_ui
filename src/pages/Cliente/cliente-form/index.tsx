@@ -18,6 +18,10 @@ import { Endereco } from '../../../models/endereco.interface';
 
 import alertaService from '../../../services/sweetalerta.service'
 
+import InputMask from "react-input-mask";
+import axios from 'axios';
+
+
 const ClienteForm: React.FC = () => {
     let { id }: any = useParams();
     useEffect(() => {
@@ -33,6 +37,7 @@ const ClienteForm: React.FC = () => {
                 setBairro(data.endereco.bairro)
                 setUf(data.endereco.uf)
                 setCidade(data.endereco.cidade)
+                setComplemento(data.endereco.complemento)
             }
             loadById(id)
         }
@@ -49,6 +54,9 @@ const ClienteForm: React.FC = () => {
     const [bairro, setBairro] = useState('')
     const [uf, setUf] = useState('')
     const [cidade, setCidade] = useState('')
+    const [complemento, setComplemento] = useState('')
+
+    const [disabledBtnSalvar, setDisabledBtnSalvar] = useState(true)
 
     const limpar = () => {
         setNome('');
@@ -60,14 +68,22 @@ const ClienteForm: React.FC = () => {
         setBairro('');
         setUf('');
         setCidade('');
+        setComplemento('')
         history.push('/novo')
     }
 
     const salvar = () => {
         const cliente = Builder<Cliente>()
             .nome(nome)
-            .cpf(cpf)
-            .telefones(telefones)
+            .cpf(cpf
+                .replaceAll(".", "")
+                .replaceAll("-", ""))
+            .telefones(telefones.map(t => ({
+                ...t, numero: t.numero
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll("-", "")
+            })))
             .emails(emails)
             .endereco(
                 Builder<Endereco>()
@@ -76,9 +92,11 @@ const ClienteForm: React.FC = () => {
                     .bairro(bairro)
                     .uf(uf)
                     .cidade(cidade)
+                    .complemento(complemento)
                     .build()
             )
             .build();
+
 
         if (id) {
             api.put(`/clientes/${id}`, cliente).then((response) => {
@@ -93,6 +111,22 @@ const ClienteForm: React.FC = () => {
         }
 
     }
+
+    const onChangeCep = (valueInput: string) => {
+        setCep(valueInput)
+        let cepSemMascara = valueInput.replace("-", "")
+        if (cepSemMascara.length > 7) {
+            axios.get(`http://viacep.com.br/ws/${cepSemMascara}/json/`).then(({ data }: any) => {
+                setLogradouro(data.logradouro)
+                setCidade(data.localidade)
+                setUf(data.uf)
+                setBairro(data.bairro)
+                setComplemento(data.complemento)
+            })
+        }
+
+    }
+
     return (
         <div className="container mt-3">
             <Card>
@@ -105,13 +139,13 @@ const ClienteForm: React.FC = () => {
                 <Form style={{ padding: '15px' }}>
                     <Form.Row>
                         <Form.Group as={Col} controlId="nome">
-                            <Form.Label>Nome</Form.Label>
-                            <Form.Control type="text" placeholder="Digite seu nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+                            <Form.Label>Nome *</Form.Label>
+                            <Form.Control type="text" placeholder="Digite seu nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="cpf">
-                            <Form.Label>CPF</Form.Label>
-                            <Form.Control type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(e.target.value)} />
+                            <Form.Label>CPF *</Form.Label>
+                            <InputMask className="form-control" mask="999.999.999-99" type="text" placeholder="999.999.999-99" value={cpf} onChange={(e) => setCpf(e.target.value)} required />
                         </Form.Group>
                     </Form.Row>
 
@@ -133,7 +167,7 @@ const ClienteForm: React.FC = () => {
                                     <div className="col">
                                         <Form.Group controlId="numero">
                                             <Form.Label>Número</Form.Label>
-                                            <Form.Control type="text" placeholder="(00) 00000-0000" value={telefone.numero} onChange={(event) =>
+                                            <InputMask className="form-control" mask="(99) 99999-9999" type="text" placeholder="(99) 99999-9999" value={telefone.numero} onChange={(event) =>
                                                 setTelefones(telefones.map((t, i) => {
                                                     if (i === index) {
                                                         return {
@@ -192,40 +226,48 @@ const ClienteForm: React.FC = () => {
                         <div className="row">
                             <div className="col-2">
                                 <Form.Group controlId="cep">
-                                    <Form.Label>Cep</Form.Label>
-                                    <Form.Control type="text" value={cep} onChange={(e) => setCep(e.target.value)} />
+                                    <Form.Label>Cep *</Form.Label>
+                                    <Form.Control type="text" value={cep} onChange={(e) => onChangeCep(e.target.value)} />
                                 </Form.Group>
                             </div>
                             <div className="col-5">
                                 <Form.Group controlId="logradouro">
                                     <Form.Label>Logradouro</Form.Label>
-                                    <Form.Control type="text" value={logradouro} onChange={(e) => setLogradouro(e.target.value)} />
+                                    <Form.Control type="text" value={logradouro} onChange={(e) => setLogradouro(e.target.value)} disabled={true} />
                                 </Form.Group>
                             </div>
                             <div className="col-2">
                                 <Form.Group controlId="bairro">
                                     <Form.Label>Bairro</Form.Label>
-                                    <Form.Control type="text" value={bairro} onChange={(e) => setBairro(e.target.value)} />
+                                    <Form.Control type="text" value={bairro} onChange={(e) => setBairro(e.target.value)} disabled={true} />
                                 </Form.Group>
                             </div>
                             <div className="col-1">
                                 <Form.Group controlId="uf">
                                     <Form.Label>UF</Form.Label>
-                                    <Form.Control type="text" value={uf} onChange={(e) => setUf(e.target.value)} />
+                                    <Form.Control type="text" value={uf} onChange={(e) => setUf(e.target.value)} disabled={true} />
                                 </Form.Group>
                             </div>
 
                             <div className="col-2">
                                 <Form.Group controlId="cidade">
                                     <Form.Label>Cidade</Form.Label>
-                                    <Form.Control type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} />
+                                    <Form.Control type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} disabled={true} />
+                                </Form.Group>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-12">
+                                <Form.Group controlId="complemento">
+                                    <Form.Label>Complemento</Form.Label>
+                                    <Form.Control type="text" value={complemento} onChange={(e) => setComplemento(e.target.value)} />
                                 </Form.Group>
                             </div>
                         </div>
                     </fieldset>
 
                     <div className="mt-3">
-                        <Button variant="primary" type="button" className="mr-3" onClick={salvar}>
+                        <Button variant="primary" type="button" className="mr-3" onClick={salvar} disabled={disabledBtnSalvar}>
                             Salvar
                     </Button>
 

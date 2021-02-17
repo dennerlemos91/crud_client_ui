@@ -4,4 +4,5 @@ export interface Endereco {
   uf: string;
   bairro: string;
   cep: string;
+  complemento: string;
 }
