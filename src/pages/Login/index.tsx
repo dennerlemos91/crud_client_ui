@@ -5,22 +5,17 @@ import { AuthContext } from "../../hooks/AuthContext";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Redirect } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
-    const [autheticated, setAutheticated] = useState(false)
-
-    const { signIn } = useContext(AuthContext);
+    const { handleLogin } = useContext(AuthContext);
 
     const handleSubmit = useCallback(async () => {
-        await signIn({ username, password });
-        setAutheticated(true)
-    }, [signIn, username, password]);
+        await handleLogin({ username, password });
+    }, [handleLogin, username, password]);
 
-    return !autheticated ? (
+    return (
         <div className="container">
             <div id="from-login">
                 <Form>
@@ -42,8 +37,7 @@ const Login = () => {
                 </Button>
                 </Form>
             </div>
-        </div>
-    ) : (<Redirect to='/' />);
+        </div>)
 };
 
 export default Login;

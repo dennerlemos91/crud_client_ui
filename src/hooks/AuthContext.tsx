@@ -1,30 +1,29 @@
-import React, { createContext, useCallback } from "react";
+import React, { createContext } from "react";
 
-import api from '../services/api';
-import tokenService from '../services/token.service';
-interface SignInCredentials {
+import useAuth from './useAuth';
+export interface SignInCredentials {
   username: string,
   password: string
 }
 
 interface AuthContextState {
-  isAuthenticated: boolean;
-  signIn(credentials: SignInCredentials): Promise<void>
+  authenticated: boolean;
+  handleLogin(credentials: SignInCredentials): Promise<void>
+  handleLogout(): void,
+  loading: boolean
 }
-export const AuthContext = createContext<AuthContextState>({} as AuthContextState);
+const AuthContext = createContext<AuthContextState>({} as AuthContextState);
 
-export const AuthProvider: React.FC = ({ children }) => {
-  const signIn = useCallback(async ({ username, password }) => {
-    const { headers } = await api.post('/login', { username, password })
-    const authorization = headers['authorization'] as string;
-    const token = authorization.substring(7)
-    tokenService.setToken(token)
-  }, [])
+const AuthProvider = ({ children }: any) => {
+  const {
+    authenticated, loading, handleLogin, handleLogout,
+  } = useAuth();
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated: false, signIn }}>
+    <AuthContext.Provider value={{ loading, authenticated, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
+export { AuthContext, AuthProvider }

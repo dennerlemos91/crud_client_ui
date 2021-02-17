@@ -1,18 +1,19 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
-import Route from './Route'
+import CustomRouter from './Route'
 
 import Login from '../pages/Login';
 import Cliente from '../pages/Cliente';
 
+
 const Routes = () => {
 
     return (
-        <BrowserRouter>
-            <Route component={Cliente} path="/" exact isPrivate />
-            <Route component={Login} path="/login" />
-        </BrowserRouter>
+        <Switch>
+            <CustomRouter isPrivate exact path="/" component={Cliente} />
+            <CustomRouter exact path="/login" component={Login} />
+        </Switch>
     )
 }
 
