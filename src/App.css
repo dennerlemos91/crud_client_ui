@@ -32,5 +32,3 @@ h6 {
   color: var(--title-color);
   font-family: "Ubuntu";
 }
-
-@import "primeflex/primeflex.css";
