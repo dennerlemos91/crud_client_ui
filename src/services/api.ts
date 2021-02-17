@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.API_URL || "http://localhost:8080",
+  baseURL: "https://cooperforte-api.herokuapp.com/",
 });
 
 export default api;
