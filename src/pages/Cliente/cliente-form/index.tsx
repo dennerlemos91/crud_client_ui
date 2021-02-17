@@ -114,7 +114,7 @@ const ClienteForm: React.FC = () => {
         setCep(valueInput)
         let cepSemMascara = valueInput.replace("-", "")
         if (cepSemMascara.length > 7) {
-            axios.get(`http://viacep.com.br/ws/${cepSemMascara}/json/`).then(({ data }: any) => {
+            axios.get(`http://viacep.com.br/ws/${cepSemMascara}/json`).then(({ data }: any) => {
                 setLogradouro(data.logradouro)
                 setCidade(data.localidade)
                 setUf(data.uf)
