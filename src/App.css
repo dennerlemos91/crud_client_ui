@@ -12,6 +12,7 @@
 
 body {
   background-color: #f0f0f5;
+  height: 100vh;
   -webkit-font-smoothing: antialiased;
   color: var(--text-color);
 }
