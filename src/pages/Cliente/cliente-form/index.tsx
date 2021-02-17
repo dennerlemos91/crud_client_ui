@@ -56,7 +56,6 @@ const ClienteForm: React.FC = () => {
     const [cidade, setCidade] = useState('')
     const [complemento, setComplemento] = useState('')
 
-    const [disabledBtnSalvar, setDisabledBtnSalvar] = useState(true)
 
     const limpar = () => {
         setNome('');
@@ -100,14 +99,13 @@ const ClienteForm: React.FC = () => {
 
         if (id) {
             api.put(`/clientes/${id}`, cliente).then((response) => {
-                console.log(response)
                 alertaService.alertaSucesso('Cliente atualizado com sucesso')
-            })
+            }).catch(() => alertaService.alertaErro('Erro ao tenta atualizar o cliente'))
         } else {
             api.post(`/clientes`, cliente).then(({ data }) => {
                 alertaService.alertaSucesso('Cliente salvo com sucesso')
                 history.push(`/edit/${data.id}`)
-            })
+            }).catch(() => alertaService.alertaErro('Erro ao tenta salvar o cliente'))
         }
 
     }
@@ -140,12 +138,12 @@ const ClienteForm: React.FC = () => {
                     <Form.Row>
                         <Form.Group as={Col} controlId="nome">
                             <Form.Label>Nome *</Form.Label>
-                            <Form.Control type="text" placeholder="Digite seu nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+                            <Form.Control type="text" placeholder="Digite seu nome" value={nome || ''} onChange={(e) => setNome(e.target.value)} required />
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="cpf">
                             <Form.Label>CPF *</Form.Label>
-                            <InputMask className="form-control" mask="999.999.999-99" type="text" placeholder="999.999.999-99" value={cpf} onChange={(e) => setCpf(e.target.value)} required />
+                            <InputMask className="form-control" mask="999.999.999-99" type="text" placeholder="999.999.999-99" value={cpf || ''} onChange={(e) => setCpf(e.target.value)} required />
                         </Form.Group>
                     </Form.Row>
 
@@ -167,7 +165,7 @@ const ClienteForm: React.FC = () => {
                                     <div className="col">
                                         <Form.Group controlId="numero">
                                             <Form.Label>Número</Form.Label>
-                                            <InputMask className="form-control" mask="(99) 99999-9999" type="text" placeholder="(99) 99999-9999" value={telefone.numero} onChange={(event) =>
+                                            <InputMask className="form-control" mask="(99) 99999-9999" type="text" placeholder="(99) 99999-9999" value={telefone.numero || ''} onChange={(event) =>
                                                 setTelefones(telefones.map((t, i) => {
                                                     if (i === index) {
                                                         return {
@@ -267,7 +265,7 @@ const ClienteForm: React.FC = () => {
                     </fieldset>
 
                     <div className="mt-3">
-                        <Button variant="primary" type="button" className="mr-3" onClick={salvar} disabled={disabledBtnSalvar}>
+                        <Button variant="primary" type="button" className="mr-3" onClick={salvar}>
                             Salvar
                     </Button>
 
